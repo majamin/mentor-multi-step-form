@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "tailwind-config-viewer": "tailwind-config-viewer -c tailwind.config.cjs -o"
   },
   "dependencies": {
     "vue": "^3.2.37"
@@ -17,6 +18,7 @@
     "postcss": "^8.4.17",
     "prettier": "2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.13",
+    "tailwind-config-viewer": "^1.7.2",
     "tailwindcss": "^3.1.8",
     "typescript": "^4.6.4",
     "vite": "^3.1.0",
