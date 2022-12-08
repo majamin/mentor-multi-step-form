@@ -17,11 +17,57 @@ const userName = ref("");
 const userEmail = ref("");
 const userTel = ref("");
 const step = ref(1);
-const planSelection = ref(1);
-const planType = ref(0);
-const onlineServices = ref(true);
-const largerStorage = ref(true);
-const customProfile = ref(false);
+
+const plans = [
+  {
+    title: "arcade",
+    monthly: 9,
+    annualy: 90,
+    imagePath: "src/assets/images/icon-arcade.svg",
+  },
+  {
+    title: "advanced",
+    monthly: 12,
+    annualy: 120,
+    imagePath: "src/assets/images/icon-advanced.svg",
+  },
+  {
+    title: "pro",
+    monthly: 15,
+    annualy: 150,
+    imagePath: "src/assets/images/icon-pro.svg",
+  },
+];
+const planType = ref("monthly");
+const planSelection = ref("advanced");
+
+function getPlan(title: string) {
+  return plans.filter((e) => {e.title = title})
+}
+
+const addOns = ref([
+  {
+    title: "Online service",
+    description: "Access to multiplayer games",
+    monthly: 1,
+    annualy: 10,
+    selected: true,
+  },
+  {
+    title: "Larger storage",
+    description: "Extra 1TB of cloud save",
+    monthly: 2,
+    annualy: 20,
+    selected: true,
+  },
+  {
+    title: "Customizable profile",
+    description: "Custom theme on your profile",
+    monthly: 2,
+    annualy: 20,
+    selected: false,
+  },
+]);
 </script>
 
 <template>
@@ -101,31 +147,25 @@ const customProfile = ref(false);
           </div>
         </div>
         <div class="flex space-x-6">
-          <TierCard :selected="planSelection === 1" @click="planSelection = 1">
+          <TierCard
+            v-for="plan in plans"
+            :selected="planSelection === plan.title"
+            @click="planSelection = plan.title"
+          >
             <template v-slot:icon
-              ><img src="@/assets/images/icon-arcade.svg" alt="arcade tier"
+              ><img :src="plan.imagePath" :alt="plan.title + ' tier'"
             /></template>
-            <template v-slot:title>Arcade</template>
-            <template v-slot:price>$9/month</template>
-          </TierCard>
-          <TierCard :selected="planSelection === 2" @click="planSelection = 2">
-            <template v-slot:icon
-              ><img src="@/assets/images/icon-advanced.svg" alt="arcade tier"
-            /></template>
-            <template v-slot:title>Advanced</template>
-            <template v-slot:price>$12/month</template>
-          </TierCard>
-          <TierCard :selected="planSelection === 3" @click="planSelection = 3">
-            <template v-slot:icon
-              ><img src="@/assets/images/icon-pro.svg" alt="arcade tier"
-            /></template>
-            <template v-slot:title>Pro</template>
-            <template v-slot:price>$15/month</template>
+            <template v-slot:title>{{ plan.title }}</template>
+            <template v-slot:price
+              >${{ planType === "monthly" ? plan.monthly : plan.annualy }}/{{
+                planType === "monthly" ? "mo" : "yr"
+              }}</template
+            >
           </TierCard>
         </div>
         <div class="mx-auto flex">
           <div
-            :class="planType === 0 ? 'text-gray-900' : 'text-gray-400'"
+            :class="planType === 'monthly' ? 'text-gray-900' : 'text-gray-400'"
             class="mr-3 text-sm font-medium dark:text-gray-300"
           >
             Monthly
@@ -133,13 +173,21 @@ const customProfile = ref(false);
           <label class="relative inline-flex cursor-pointer items-center">
             <input type="checkbox" value="" class="peer sr-only" checked />
             <div
-              :class="planType === 0 ? 'after:left-[4px]' : 'after:left-[24px]'"
+              :class="
+                planType === 'monthly'
+                  ? 'after:left-[4px]'
+                  : 'after:left-[24px]'
+              "
               class="ease h-6 w-11 rounded-full bg-marine-blue transition-all duration-500 after:absolute after:top-1 after:h-4 after:w-4 after:rounded-full after:bg-white after:content-['']"
-              @click="planType = (planType + 1) % 2"
+              @click="
+                planType === 'yearly'
+                  ? (planType = 'monthly')
+                  : (planType = 'yearly')
+              "
             ></div>
           </label>
           <div
-            :class="planType === 1 ? 'text-gray-900' : 'text-gray-400'"
+            :class="planType === 'yearly' ? 'text-gray-900' : 'text-gray-400'"
             class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300"
           >
             Yearly
@@ -155,35 +203,70 @@ const customProfile = ref(false);
           </div>
         </div>
         <div class="flex flex-col space-y-6">
-          <Checkbox v-model="onlineServices">
-            <template v-slot:title>Online service</template>
-            <template v-slot:description>Access to multiplayer games</template>
-            <template v-slot:price>+$10/yr</template>
-          </Checkbox>
-          <Checkbox v-model="largerStorage">
-            <template v-slot:title>Larger storage</template>
-            <template v-slot:description>Extra 1TB of cloud save</template>
-            <template v-slot:price>+$20/yr</template>
-          </Checkbox>
-          <Checkbox v-model="customProfile">
-            <template v-slot:title>Customizable profile</template>
-            <template v-slot:description>Custom theme on your profile</template>
-            <template v-slot:price>+$20/yr</template>
+          <Checkbox v-for="addon in addOns" v-model="addon.selected">
+            <template v-slot:title>{{ addon.title }}</template>
+            <template v-slot:description>{{ addon.description }}</template>
+            <template v-slot:price
+              >+${{ planType === "monthly" ? addon.monthly : addon.annualy }}/{{
+                planType === "monthly" ? "mo" : "yr"
+              }}</template
+            >
           </Checkbox>
         </div>
       </div>
       <!-- STEP 4 -->
-      <div v-if="step === 4">Step 4</div>
+      <div v-if="step === 4" class="flex flex-col space-y-12">
+        <div>
+          <div class="mb-2 text-4xl font-black">Finishing up</div>
+          <div class="font-light text-cool-gray">
+            Double-check everything looks OK before continuing.
+          </div>
+        </div>
+        <div v-if="planType === 'monthly'" class="flex flex-col">
+          <div class="flex justify-between">
+            <div>Arcade ({{ planType }})</div>
+            <div></div>
+          </div>
+          <div class="flex justify-between">
+            <div>Change</div>
+            <div>${{ 'Figure out how to get prices' }}/mo</div>
+          </div>
+          <div class="flex justify-between">
+            <div>Online service</div>
+            <div>+$1/mo</div>
+          </div>
+          <div class="flex justify-between">
+            <div>Larger storage</div>
+            <div>+$2/mo</div>
+          </div>
+          <div class="flex justify-between">
+            <div>Total (per month)</div>
+            <div>+$12/mo</div>
+          </div>
+        </div>
+      </div>
+      <!-- NAVIGATION -->
       <div class="flex justify-between">
         <div v-if="step <= 1"></div>
         <div v-else>
-          <Button @click="step <= 1 ? (step = 1) : step--">Go Back</Button>
+          <Button
+            class="text-gray-400 hover:text-current"
+            @click="step <= 1 ? (step = 1) : step--"
+            >Go Back</Button
+          >
         </div>
         <div>
           <Button
+            v-if="step < 4"
             class="bg-marine-blue text-white"
             @click="step >= 4 ? (step = 4) : step++"
             >Next Step</Button
+          >
+          <Button
+            v-if="step === 4"
+            class="bg-purplish-blue text-white"
+            @click=""
+            >Confirm</Button
           >
         </div>
       </div>
