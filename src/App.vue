@@ -11,41 +11,89 @@ import Checkbox from "@/components/AddonsCheckbox.vue";
 import Button from "@/components/Base/BaseButton.vue";
 import Bubble from "@/components/BubbleStep.vue";
 import TierCard from "@/components/TierCard.vue";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
-const userName = ref("");
-const userEmail = ref("");
-const userTel = ref("");
+import arcadeIcon from "@/assets/images/icon-arcade.svg";
+import advancedIcon from "@/assets/images/icon-advanced.svg";
+import proIcon from "@/assets/images/icon-pro.svg";
+import thanksIcon from "@/assets/images/icon-thank-you.svg";
+
 const step = ref(1);
 
-const plans = [
-  {
-    title: "arcade",
-    monthly: 9,
-    annualy: 90,
-    imagePath: "src/assets/images/icon-arcade.svg",
-  },
-  {
-    title: "advanced",
-    monthly: 12,
-    annualy: 120,
-    imagePath: "src/assets/images/icon-advanced.svg",
-  },
-  {
-    title: "pro",
-    monthly: 15,
-    annualy: 150,
-    imagePath: "src/assets/images/icon-pro.svg",
-  },
-];
-const planType = ref("monthly");
-const planSelection = ref("advanced");
+type PlanTier = "Arcade" | "Advanced" | "Pro";
+type PlanDuration = "Monthly" | "Annual";
+const planTierSelected = ref<PlanTier>("Arcade");
+const planDuration = ref<PlanDuration>("Monthly");
 
-function getPlan(title: string) {
-  return plans.filter((e) => {e.title = title})
+const calcPrice = computed(() => {
+  if (planDuration.value === "Monthly") {
+    let plan = plans.find((e) => e.tier === planTierSelected.value);
+    let addOnsCosts = addOns.value
+      .filter((e) => e.selected)
+      .map((value) => value.monthly);
+    if (plan) {
+      return plan.monthly + addOnsCosts.reduce((s, x) => s + x);
+    }
+  } else if (planDuration.value === "Annual") {
+    let plan = plans.find((e) => e.tier === planTierSelected.value);
+    let addOnsCosts = addOns.value
+      .filter((e) => e.selected)
+      .map((value) => value.annualy);
+    if (plan) {
+      return plan.annualy + addOnsCosts.reduce((s, x) => s + x);
+    }
+  }
+});
+
+interface User {
+  name: string;
+  email: string;
+  tel: string;
 }
 
-const addOns = ref([
+const user = ref<User>({
+  name: "",
+  email: "",
+  tel: "",
+});
+
+interface Plan {
+  tier: PlanTier;
+  annualy: number;
+  monthly: number;
+  img: string | undefined;
+}
+
+const plans: Plan[] = [
+  {
+    tier: "Arcade",
+    monthly: 9,
+    annualy: 90,
+    img: "src/assets/images/icon-arcade.svg",
+  },
+  {
+    tier: "Advanced",
+    monthly: 12,
+    annualy: 120,
+    img: "src/assets/images/icon-advanced.svg",
+  },
+  {
+    tier: "Pro",
+    monthly: 15,
+    annualy: 150,
+    img: "src/assets/images/icon-pro.svg",
+  },
+];
+
+interface AddonPlan {
+  title: string;
+  description: string;
+  monthly: number;
+  annualy: number;
+  selected: boolean;
+}
+
+const addOns = ref<AddonPlan[]>([
   {
     title: "Online service",
     description: "Access to multiplayer games",
@@ -86,28 +134,32 @@ const addOns = ref([
       </div>
       <div class="absolute top-0 left-0 flex p-10 text-white">
         <div class="flex flex-col space-y-8">
-          <div class="flex">
-            <Bubble :selected="step === 1" @click="step = 1">1</Bubble>
-            <div class="ml-4 flex items-center justify-center uppercase">
-              Your Info
+          <div class="flex items-center align-middle cursor-pointer" @click="step = 1">
+            <Bubble :selected="step === 1">1</Bubble>
+            <div class="ml-4 flex flex-col justify-center uppercase">
+              <div class="text-sm text-gray-400">Step 1</div>
+              <div class="flex items-center">Your Info</div>
             </div>
           </div>
-          <div class="flex">
-            <Bubble :selected="step === 2" @click="step = 2">2</Bubble>
-            <div class="ml-4 flex items-center justify-center uppercase">
-              Select Plan
+          <div class="flex items-center align-middle cursor-pointer" @click="step = 2">
+            <Bubble :selected="step === 2">2</Bubble>
+            <div class="ml-4 flex flex-col justify-center uppercase">
+              <div class="text-sm text-gray-400">Step 2</div>
+              <div class="flex items-center">Select Plan</div>
             </div>
           </div>
-          <div class="flex">
-            <Bubble :selected="step === 3" @click="step = 3">3</Bubble>
-            <div class="ml-4 flex items-center justify-center uppercase">
-              Add-Ons
+          <div class="flex items-center align-middle cursor-pointer" @click="step = 3">
+            <Bubble :selected="step === 3">3</Bubble>
+            <div class="ml-4 flex flex-col justify-center uppercase">
+              <div class="text-sm text-gray-400">Step 3</div>
+              <div class="flex items-center">Add-Ons</div>
             </div>
           </div>
-          <div class="flex">
-            <Bubble :selected="step === 4" @click="step = 4">4</Bubble>
-            <div class="ml-4 flex items-center justify-center uppercase">
-              Summary
+          <div class="flex items-center align-middle cursor-pointer">
+            <Bubble :selected="step >= 4">4</Bubble>
+            <div class="ml-4 flex flex-col justify-center uppercase">
+              <div class="text-sm text-gray-400">Step 4</div>
+              <div class="flex items-center">Summary</div>
             </div>
           </div>
         </div>
@@ -123,17 +175,22 @@ const addOns = ref([
           </div>
         </div>
         <div class="flex flex-col">
-          <BaseInput class="mb-6" label="Name" v-model="userName" type="text" />
+          <BaseInput
+            class="mb-6"
+            label="Name"
+            v-model="user.name"
+            type="text"
+          />
           <BaseInput
             class="mb-6"
             label="Email"
-            v-model="userEmail"
+            v-model="user.email"
             type="email"
           />
           <BaseInput
             class="mb-6"
             label="Phone Number"
-            v-model="userTel"
+            v-model="user.tel"
             type="tel"
           />
         </div>
@@ -149,23 +206,25 @@ const addOns = ref([
         <div class="flex space-x-6">
           <TierCard
             v-for="plan in plans"
-            :selected="planSelection === plan.title"
-            @click="planSelection = plan.title"
+            :selected="plan.tier == planTierSelected"
+            @click="planTierSelected = plan.tier"
           >
             <template v-slot:icon
-              ><img :src="plan.imagePath" :alt="plan.title + ' tier'"
+              ><img :src="plan.img" :alt="plan.tier + ' tier'"
             /></template>
-            <template v-slot:title>{{ plan.title }}</template>
+            <template v-slot:title>{{ plan.tier }}</template>
             <template v-slot:price
-              >${{ planType === "monthly" ? plan.monthly : plan.annualy }}/{{
-                planType === "monthly" ? "mo" : "yr"
-              }}</template
+              >${{
+                planDuration === "Monthly" ? plan.monthly : plan.annualy
+              }}/{{ planDuration === "Monthly" ? "mo" : "yr" }}</template
             >
           </TierCard>
         </div>
         <div class="mx-auto flex">
           <div
-            :class="planType === 'monthly' ? 'text-gray-900' : 'text-gray-400'"
+            :class="
+              planDuration === 'Monthly' ? 'text-gray-900' : 'text-gray-400'
+            "
             class="mr-3 text-sm font-medium dark:text-gray-300"
           >
             Monthly
@@ -174,20 +233,22 @@ const addOns = ref([
             <input type="checkbox" value="" class="peer sr-only" checked />
             <div
               :class="
-                planType === 'monthly'
+                planDuration === 'Monthly'
                   ? 'after:left-[4px]'
                   : 'after:left-[24px]'
               "
               class="ease h-6 w-11 rounded-full bg-marine-blue transition-all duration-500 after:absolute after:top-1 after:h-4 after:w-4 after:rounded-full after:bg-white after:content-['']"
               @click="
-                planType === 'yearly'
-                  ? (planType = 'monthly')
-                  : (planType = 'yearly')
+                planDuration === 'Annual'
+                  ? (planDuration = 'Monthly')
+                  : (planDuration = 'Annual')
               "
             ></div>
           </label>
           <div
-            :class="planType === 'yearly' ? 'text-gray-900' : 'text-gray-400'"
+            :class="
+              planDuration === 'Annual' ? 'text-gray-900' : 'text-gray-400'
+            "
             class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300"
           >
             Yearly
@@ -207,9 +268,9 @@ const addOns = ref([
             <template v-slot:title>{{ addon.title }}</template>
             <template v-slot:description>{{ addon.description }}</template>
             <template v-slot:price
-              >+${{ planType === "monthly" ? addon.monthly : addon.annualy }}/{{
-                planType === "monthly" ? "mo" : "yr"
-              }}</template
+              >+${{
+                planDuration === "Monthly" ? addon.monthly : addon.annualy
+              }}/{{ planDuration === "Monthly" ? "mo" : "yr" }}</template
             >
           </Checkbox>
         </div>
@@ -222,32 +283,68 @@ const addOns = ref([
             Double-check everything looks OK before continuing.
           </div>
         </div>
-        <div v-if="planType === 'monthly'" class="flex flex-col">
-          <div class="flex justify-between">
-            <div>Arcade ({{ planType }})</div>
-            <div></div>
+        <div class="flex flex-col">
+          <div class="flex flex-col">
+            <div>
+              {{ planTierSelected }} ({{
+                planDuration === "Annual" ? "Yearly" : planDuration
+              }})
+            </div>
+            <div class="flex justify-between">
+              <div class="text-cool-gray underline">Change</div>
+              <div v-if="planDuration === 'Monthly'">
+                +${{
+                  plans.find((e) => e.tier === planTierSelected)?.monthly
+                }}/mo
+              </div>
+              <div v-else>
+                +${{
+                  plans.find((e) => e.tier === planTierSelected)?.annualy
+                }}/yr
+              </div>
+            </div>
           </div>
-          <div class="flex justify-between">
-            <div>Change</div>
-            <div>${{ 'Figure out how to get prices' }}/mo</div>
+          <hr class="my-6 h-px border-0 bg-gray-200 dark:bg-gray-700" />
+          <div>
+            <div
+              v-for="addon in addOns.filter((e) => e.selected)"
+              class="mb-2 flex justify-between"
+            >
+              <div class="text-cool-gray">{{ addon.title }}</div>
+              <div v-if="planDuration === 'Monthly'">
+                +${{ addon.monthly }}/mo
+              </div>
+              <div v-else>+${{ addon.annualy }}/yr</div>
+            </div>
           </div>
-          <div class="flex justify-between">
-            <div>Online service</div>
-            <div>+$1/mo</div>
+          <div class="mt-4 flex justify-between">
+            <div class="text-cool-gray">
+              Total (per {{ planDuration === "Monthly" ? "month" : "year" }})
+            </div>
+            <div class="text-lg font-bold text-purplish-blue">
+              +${{ calcPrice }}/{{ planDuration === "Monthly" ? "mo" : "yr" }}
+            </div>
           </div>
-          <div class="flex justify-between">
-            <div>Larger storage</div>
-            <div>+$2/mo</div>
-          </div>
-          <div class="flex justify-between">
-            <div>Total (per month)</div>
-            <div>+$12/mo</div>
-          </div>
+        </div>
+      </div>
+      <!-- STEP 5 (CONFIRM) -->
+      <div
+        v-if="step === 5"
+        class="my-auto flex flex-col items-center space-y-8 text-center align-middle"
+      >
+        <div>
+          <img :src="thanksIcon" alt="thank you" />
+        </div>
+        <div class="text-2xl font-bold text-marine-blue">Thank you!</div>
+        <div class="text-cool-gray">
+          Thanks for confirming your subscription! We hope you have fun using
+          our platform. If you ever need support, please feel free to email us
+          at <a href="#">support@loremgaming.com</a>
         </div>
       </div>
       <!-- NAVIGATION -->
       <div class="flex justify-between">
-        <div v-if="step <= 1"></div>
+        <div v-if="step <= 1 || step > 4"></div>
         <div v-else>
           <Button
             class="text-gray-400 hover:text-current"
@@ -265,7 +362,7 @@ const addOns = ref([
           <Button
             v-if="step === 4"
             class="bg-purplish-blue text-white"
-            @click=""
+            @click="step += 1"
             >Confirm</Button
           >
         </div>

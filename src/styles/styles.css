@@ -7,6 +7,9 @@
   html {
     @apply bg-magnolia text-marine-blue text-base;
   }
+  a {
+    @apply transition-colors hover:text-marine-blue;
+  }
 }
 
 button,

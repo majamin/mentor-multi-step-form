@@ -2,6 +2,9 @@
 const { selected } = defineProps({
   selected: { type: Boolean, default: false },
 });
+
+import cardImage from "@/assets/images/icon-arcade.svg"
+
 </script>
 <template>
   <div
@@ -10,7 +13,7 @@ const { selected } = defineProps({
   >
     <div class="w-8">
       <slot name="icon">
-        <img src="@/assets/images/icon-arcade.svg" alt="arcade tier" />
+        <img :src="cardImage" alt="arcade tier" />
       </slot>
     </div>
     <div class="flex flex-col">

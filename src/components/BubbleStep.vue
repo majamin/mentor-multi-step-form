@@ -8,7 +8,7 @@ const { selected } = defineProps({
     :class="
       selected ? 'bg-light-blue text-marine-blue' : 'bg-transparent text-white'
     "
-    class="flex h-8 w-8 cursor-pointer flex-col items-center justify-center rounded-full border border-gray-300 text-sm font-bold"
+    class="flex h-8 w-8 flex-col items-center justify-center rounded-full border border-gray-300 text-sm font-bold"
   >
     <slot></slot>
   </div>
