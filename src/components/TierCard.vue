@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import cardImage from "@/assets/images/icon-arcade.svg";
 const { selected } = defineProps({
   selected: { type: Boolean, default: false },
 });
 
-import cardImage from "@/assets/images/icon-arcade.svg";
 </script>
 <template>
   <div
