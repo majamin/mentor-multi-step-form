@@ -1,34 +1,40 @@
 #!/usr/bin/env sh
 
+# Vite deploy script
+
+OUTDIR="dist"
+
 USER="majamin"
 REPO="mentor-multi-step-form"
-BRANCH="master"
+DEPLOY_BRANCH="gh-pages"
 DT="$(date +%s)"
 
 # abort on errors
 set -e
 
 # build
-npm run build
+npm run build -- --outDir "${OUTDIR}" --base "/${REPO}/"
 
 # navigate into the build output directory
-cd dist
+cd "${OUTDIR}"
 
 # place .nojekyll to bypass Jekyll processing
 echo > .nojekyll
 
-# if you are deploying to a custom domain
+# OPTION: deploy to a custom domain
 # echo 'www.example.com' > CNAME
 
-git init
-git checkout -B $BRANCH
+git init -b ${DEPLOY_BRANCH}
 git add -A
 git commit -m "deploy $DT"
 
-# if you are deploying to https://<USERNAME>.github.io
-# git push -f git@github.com:<USERNAME>/<USERNAME>.github.io.git main
+# OPTION 1: You are deploying to https://<USERNAME>.github.io
+# git push -f git@github.com:${USERNAME}/${USERNAME}.github.io.git "${MAIN_BRANCH}"
 
-# if you are deploying to https://<USERNAME>.github.io/<REPO>
-git push -f git@github.com:${USERNAME}/${REPO}.git ${BRANCH}:gh-pages
+# OPTION 2: You are deploying to https://<USERNAME>.github.io/<REPO>
+git push -f git@github.com:${USER}/${REPO}.git ${DEPLOY_BRANCH}
 
 cd -
+
+# NOTE FOR OPTION 2: go to https://<USERNAME>.github.io/<REPO>, Settings, and point
+# "pages" to your BRANCH
