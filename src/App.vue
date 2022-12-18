@@ -1,7 +1,7 @@
 <!-----------------------------------------------------------------------------
 ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
 ▒                                                                             ▒
-▒  Frontend Mentor - multistep-form-F4mdEEDl8o                                ▒
+▒  Frontend Mentor Challenge - multi-step-form                                ▒
 ▒                                                                             ▒
 ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
 ------------------------------------------------------------------------------>
@@ -13,9 +13,6 @@ import Bubble from "@/components/BubbleStep.vue";
 import TierCard from "@/components/TierCard.vue";
 import { ref, computed } from "vue";
 
-import arcadeIcon from "@/assets/images/icon-arcade.svg";
-import advancedIcon from "@/assets/images/icon-advanced.svg";
-import proIcon from "@/assets/images/icon-pro.svg";
 import thanksIcon from "@/assets/images/icon-thank-you.svg";
 
 const step = ref(1);
@@ -377,7 +374,8 @@ const addOns = ref<AddonPlan[]>([
       </div>
       <!-- NAVIGATION -->
       <div
-        class="absolute bottom-0 flex w-full justify-between bg-white p-4 md:relative md:ml-4 md:mt-0"
+        :class="step > 4 ? 'bg-magnolia' : 'bg-white'"
+        class="absolute bottom-0 flex w-full justify-between p-4 md:relative md:ml-4 md:mt-0"
       >
         <div v-if="step <= 1 || step > 4"></div>
         <div v-else>
