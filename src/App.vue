@@ -13,8 +13,6 @@ import Bubble from "@/components/BubbleStep.vue";
 import TierCard from "@/components/TierCard.vue";
 import { ref, computed } from "vue";
 
-import thanksIcon from "@/assets/images/icon-thank-you.svg";
-
 const step = ref(1);
 
 type PlanTier = "Arcade" | "Advanced" | "Pro";
@@ -66,19 +64,19 @@ const plans: Plan[] = [
     tier: "Arcade",
     monthly: 9,
     annualy: 90,
-    img: "src/assets/images/icon-arcade.svg",
+    img: "/images/icon-arcade.svg",
   },
   {
     tier: "Advanced",
     monthly: 12,
     annualy: 120,
-    img: "src/assets/images/icon-advanced.svg",
+    img: "/images/icon-advanced.svg",
   },
   {
     tier: "Pro",
     monthly: 15,
     annualy: 150,
-    img: "src/assets/images/icon-pro.svg",
+    img: "/images/icon-pro.svg",
   },
 ];
 
@@ -362,7 +360,7 @@ const addOns = ref<AddonPlan[]>([
           class="my-auto flex flex-col items-center space-y-8 text-center align-middle"
         >
           <div>
-            <img :src="thanksIcon" alt="thank you" />
+            <img src="/images/icon-thank-you.svg" alt="thank you" />
           </div>
           <div class="text-2xl font-bold text-marine-blue">Thank you!</div>
           <div class="text-cool-gray">
