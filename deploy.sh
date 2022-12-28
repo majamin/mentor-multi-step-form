@@ -25,7 +25,7 @@ echo > .nojekyll
 # echo 'www.example.com' > CNAME
 
 git init
-git checkout -b master
+git checkout -b "$DEPLOY_BRANCH"
 git add -A
 git commit -m "deploy $DT"
 
@@ -33,7 +33,7 @@ git commit -m "deploy $DT"
 # git push -f git@github.com:${USERNAME}/${USERNAME}.github.io.git "${MAIN_BRANCH}"
 
 # OPTION 2: You are deploying to https://<USERNAME>.github.io/<REPO>
-git push -f git@github.com:${USER}/${REPO}.git master:${DEPLOY_BRANCH}
+git push -f git@github.com:${USER}/${REPO}.git ${DEPLOY_BRANCH}
 
 cd -
 

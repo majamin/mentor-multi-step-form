@@ -120,7 +120,7 @@ const addOns = ref<AddonPlan[]>([
 
 <template>
   <div
-    class="flex flex-col rounded-lg mx-auto bg-magnolia shadow-gray-200 md:container md:flex-row md:bg-white md:p-4 md:shadow-lg"
+    class="mx-auto flex flex-col rounded-lg bg-magnolia shadow-gray-200 md:container md:flex-row md:bg-white md:p-4 md:shadow-lg"
   >
     <div class="relative">
       <div
@@ -190,9 +190,9 @@ const addOns = ref<AddonPlan[]>([
       </div>
     </div>
 
-    <div class="relative flex flex-col justify-between md:bg-white">
+    <div class="relative flex flex-col justify-between md:w-full md:bg-white">
       <div
-        class="absolute flex flex-col -top-12 justify-between rounded-md bg-white p-6 shadow-xl shadow-gray-200 sm:left-1/2 sm:-top-32 sm:-ml-64 sm:w-128 md:container md:static md:top-0 md:ml-0 md:shadow-none"
+        class="absolute -top-12 flex flex-col justify-between rounded-md bg-white p-6 shadow-xl shadow-gray-200 sm:left-1/2 sm:-top-32 sm:-ml-64 sm:w-128 md:static md:top-0 md:ml-0 md:w-full md:shadow-none"
       >
         <!-- STEP 1 -->
         <div v-if="step === 1" class="flex flex-col space-y-12">
