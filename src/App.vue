@@ -13,11 +13,16 @@ import Bubble from "@/components/BubbleStep.vue";
 import TierCard from "@/components/TierCard.vue";
 import { ref, computed } from "vue";
 
+import iconThankYou from "@/assets/images/icon-thank-you.svg";
+import iconArcade from "@/assets/images/icon-arcade.svg";
+import iconAdvanced from "@/assets/images/icon-advanced.svg";
+import iconPro from "@/assets/images/icon-pro.svg";
+
 const step = ref(1);
 
 type PlanTier = "Arcade" | "Advanced" | "Pro";
 type PlanDuration = "Monthly" | "Annual";
-const planTierSelected = ref<PlanTier>("Arcade");
+const planTierSelected = ref<PlanTier>("Advanced");
 const planDuration = ref<PlanDuration>("Monthly");
 
 const calcPrice = computed(() => {
@@ -64,19 +69,19 @@ const plans: Plan[] = [
     tier: "Arcade",
     monthly: 9,
     annualy: 90,
-    img: "/images/icon-arcade.svg",
+    img: iconArcade,
   },
   {
     tier: "Advanced",
     monthly: 12,
     annualy: 120,
-    img: "/images/icon-advanced.svg",
+    img: iconAdvanced,
   },
   {
     tier: "Pro",
     monthly: 15,
     annualy: 150,
-    img: "/images/icon-pro.svg",
+    img: iconPro,
   },
 ];
 
@@ -115,7 +120,7 @@ const addOns = ref<AddonPlan[]>([
 
 <template>
   <div
-    class="mx-auto flex flex-col rounded-lg bg-magnolia shadow-gray-200 md:container md:flex-row md:bg-white md:p-4 md:shadow-lg"
+    class="flex flex-col rounded-lg mx-auto bg-magnolia shadow-gray-200 md:container md:flex-row md:bg-white md:p-4 md:shadow-lg"
   >
     <div class="relative">
       <div
@@ -123,7 +128,7 @@ const addOns = ref<AddonPlan[]>([
       >
         <img
           src="@/assets/images/bg-sidebar-mobile.svg"
-          class="min-h-full min-w-full shrink-0 md:hidden"
+          class="w-full object-fill object-bottom md:hidden"
           alt=""
         />
         <img
@@ -185,9 +190,9 @@ const addOns = ref<AddonPlan[]>([
       </div>
     </div>
 
-    <div class="flex flex-col w-full justify-between bg-magnolia md:bg-white">
+    <div class="relative flex flex-col justify-between md:bg-white">
       <div
-        class="relative mx-4 flex min-h-max flex-col justify-between rounded-md bg-white p-6 shadow-xl shadow-gray-200 xs:top-[-5rem] sm:top-[-8rem] md:container md:top-0 md:shadow-none lg:p-24"
+        class="absolute flex flex-col -top-12 justify-between rounded-md bg-white p-6 shadow-xl shadow-gray-200 sm:left-1/2 sm:-top-32 sm:-ml-64 sm:w-128 md:container md:static md:top-0 md:ml-0 md:shadow-none"
       >
         <!-- STEP 1 -->
         <div v-if="step === 1" class="flex flex-col space-y-12">
@@ -220,14 +225,14 @@ const addOns = ref<AddonPlan[]>([
         </div>
         <!-- STEP 2 -->
         <div v-if="step === 2" class="flex flex-col space-y-12">
-          <div class="md:mx-20">
+          <div class="">
             <div class="mb-2 text-4xl font-black">Select your plan</div>
             <div class="font-light text-cool-gray">
               You have the option of monthly or annual billing.
             </div>
           </div>
           <div
-            class="flex flex-col space-x-0 space-y-2 md:mx-20 md:flex-row md:space-x-6 md:space-y-0"
+            class="flex flex-col space-x-0 space-y-2 md:flex-row md:space-x-6 md:space-y-0"
           >
             <TierCard
               v-for="plan in plans"
@@ -360,7 +365,7 @@ const addOns = ref<AddonPlan[]>([
           class="my-auto flex flex-col items-center space-y-8 text-center align-middle"
         >
           <div>
-            <img src="/images/icon-thank-you.svg" alt="thank you" />
+            <img :src="iconThankYou" alt="thank you" />
           </div>
           <div class="text-2xl font-bold text-marine-blue">Thank you!</div>
           <div class="text-cool-gray">
@@ -372,8 +377,8 @@ const addOns = ref<AddonPlan[]>([
       </div>
       <!-- NAVIGATION -->
       <div
-        :class="step > 4 ? 'bg-magnolia' : 'bg-white'"
-        class="absolute bottom-0 flex w-full justify-between p-4 md:relative md:ml-4 md:mt-0"
+        :class="step > 4 ? 'bg-magnolia md:bg-white' : 'bg-white'"
+        class="hidden w-full justify-between p-4 md:mt-0 md:flex"
       >
         <div v-if="step <= 1 || step > 4"></div>
         <div v-else>
@@ -399,5 +404,46 @@ const addOns = ref<AddonPlan[]>([
         </div>
       </div>
     </div>
+    <div
+      :class="step > 4 ? 'bg-magnolia md:bg-white' : 'bg-white'"
+      class="absolute bottom-0 flex w-full justify-between p-4 md:ml-4 md:mt-0 md:hidden"
+    >
+      <div v-if="step <= 1 || step > 4"></div>
+      <div v-else>
+        <Button
+          class="text-gray-400 hover:text-current"
+          @click="step <= 1 ? (step = 1) : step--"
+          >Go Back</Button
+        >
+      </div>
+      <div>
+        <Button
+          v-if="step < 4"
+          class="bg-marine-blue text-white"
+          @click="step >= 4 ? (step = 4) : step++"
+          >Next Step</Button
+        >
+        <Button
+          v-if="step === 4"
+          class="bg-purplish-blue text-white"
+          @click="step += 1"
+          >Confirm</Button
+        >
+      </div>
+    </div>
   </div>
 </template>
+
+<style>
+/* outline: 2px solid red !important; */
+.debug::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: limegreen;
+  opacity: 0.2;
+}
+</style>
