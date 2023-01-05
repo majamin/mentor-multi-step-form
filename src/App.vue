@@ -192,7 +192,7 @@ const addOns = ref<AddonPlan[]>([
 
     <div class="relative flex flex-col justify-between md:w-full md:bg-white">
       <div
-        class="absolute -top-12 flex flex-col justify-between rounded-md bg-white p-6 shadow-xl shadow-gray-200 sm:left-1/2 sm:-top-32 sm:-ml-64 sm:w-128 md:static md:top-0 md:ml-0 md:w-full md:shadow-none"
+        class="absolute -top-12 sm:left-1/2 sm:-ml-64 flex flex-col justify-between rounded-md bg-white p-6 shadow-xl shadow-gray-200 sm:-top-32 sm:w-128 md:static md:top-0 md:ml-0 md:w-full md:shadow-none"
       >
         <!-- STEP 1 -->
         <div v-if="step === 1" class="flex flex-col space-y-12">

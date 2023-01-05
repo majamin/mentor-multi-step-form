@@ -25,7 +25,7 @@ echo > .nojekyll
 # echo 'www.example.com' > CNAME
 
 git init
-git checkout -b "$DEPLOY_BRANCH"
+git checkout -b "$DEPLOY_BRANCH" || git checkout "$DEPLOY_BRANCH"
 git add -A
 git commit -m "deploy $DT"
 
